@@ -1,24 +1,18 @@
-Jenkinsfile (Declarative Pipeline)
 pipeline {
-    agent any
+  agent any
+  stages {
+    stage('Test') {
+      agent {
+        docker {
+          image 'gcc:latest'
+        }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building..'
-                make all
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-                make tests
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+      }
+      steps {
+        sh 'git submodule update --init --recursive'
+        sh 'cd client/tests; make test'
+      }
     }
+
+  }
 }
