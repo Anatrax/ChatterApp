@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ChatView.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>CreateUserView.qml</file>
+        <file>NoChatView.qml</file>
+    </qresource>
+</RCC>
