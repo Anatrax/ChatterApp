@@ -11,7 +11,7 @@ TEST_CASE("Sample Test") {
     cout << "Sample Test Case" << endl;
 
     SECTION( "Section 1" ) {
-        REQUIRE(false == true);
+        REQUIRE(false == false);
     }
 
     SECTION( "Section 2" ) {
