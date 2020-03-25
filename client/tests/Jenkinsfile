@@ -1,0 +1,24 @@
+Jenkinsfile (Declarative Pipeline)
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                make all
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                make tests
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
