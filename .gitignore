@@ -173,3 +173,4 @@ dist
 ########## Project gitignores ##########
 Debug
 .vscode
+ChatterClientTests
