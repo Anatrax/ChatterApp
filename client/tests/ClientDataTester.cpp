@@ -4,6 +4,7 @@
  * @date April 2, 2020
  * @todo Test overloaded addMessage() functions
  * @todo Test setCurConvo()
+ * @todo Test data reset
  */
 
 //Bring in unit testing code

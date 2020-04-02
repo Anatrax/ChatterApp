@@ -63,3 +63,7 @@ QString Backend::time() const {
 QString Backend::getConversation() const {
     return QString::fromStdString(this->data_model.getConversation());
 }
+
+void Backend::resetData(){
+    this->data_model.reset();
+}

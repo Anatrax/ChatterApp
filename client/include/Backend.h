@@ -105,6 +105,11 @@ public:
      */
     Q_INVOKABLE QString getConversation() const;
 
+    /**
+     * @brief Clears all data and resets to default init state
+     */
+    Q_INVOKABLE void reset();
+
 signals:
     /**
      * @brief Send client's username changed signal

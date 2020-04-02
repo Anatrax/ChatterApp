@@ -101,6 +101,11 @@ public:
      */
     const std::string getConversation() const;
 
+    /**
+     * @brief Clears all data and resets to default init state
+     */
+    void resetData();
+
     std::string uname;      // Client user's username
     std::string uid;        // Client user's server connection ID
     std::string cur_convo;  // Username of user that client user is conversing with
