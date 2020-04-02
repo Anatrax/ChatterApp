@@ -24,10 +24,10 @@ TEST_CASE("Message Struct Defaults") {
         string author = G.randomString();
         string message = G.randomString();
         
-        Message TestMessage(author, message);
+        struct Message TestMessage(author, message);
 
-        REQUIRE(TestMessage.author() == author);
-        REQUIRE(TestMessage.contents() == message);
+        REQUIRE(TestMessage.author == author);
+        REQUIRE(TestMessage.contents == message);
     }
 
     SECTION("3 argument Message Constructor Defaults"){
@@ -36,11 +36,11 @@ TEST_CASE("Message Struct Defaults") {
         string message = G.randomString();
         string timestamp = G.randomString();
         
-        Message M(author, message, timestamp);
+        struct Message TestMessage(author, message, timestamp);
 
-        REQUIRE(TestMessage.author() == author);
-        REQUIRE(TestMessage.contents() == message);
-        REQUIRE(TestMessage.timestamp() == timestamp);
+        REQUIRE(TestMessage.author == author);
+        REQUIRE(TestMessage.contents == message);
+        REQUIRE(TestMessage.timestamp == timestamp);
     }
 }
 
@@ -52,7 +52,7 @@ TEST_CASE("Conversation Constructor Defaults") {
     Conversation convo(username);
 
     REQUIRE(convo.length() == 0);   // Length just returns std::vector<>.size()
-    REQUIRE(convo.getUsername() == username);
+    REQUIRE(convo.getUname() == username);
 }
 
 TEST_CASE("Add messages to the conversation, 2 args") {

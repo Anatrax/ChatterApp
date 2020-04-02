@@ -1,7 +1,9 @@
 /**
  * @brief Basic unit tests for the Chatter client View Controller
  * @author Samuel D. Villegas
- * @date March 25, 2020
+ * @date April 2, 2020
+ * @todo Test overloaded addMessage() functions
+ * @todo Test setCurConvo()
  */
 
 //Bring in unit testing code
@@ -27,6 +29,7 @@ TEST_CASE("Add users to connected users list") {
     RandomStringGenerator G;
 
     SECTION( "Number of connected users increases" ) {
+        cout << "Testing if adding a user increases number of users" << endl;
         ClientData state;
         int num_users_previous = state.getNumUsers();
         string connected_username = G.randomString();
@@ -38,6 +41,7 @@ TEST_CASE("Add users to connected users list") {
     }
 
     SECTION( "Can add at least 500 connected users" ) {
+        cout << "Testing if can add up to 500 users" << endl;
         ClientData state;
 
         for(int i = 0; i < 500; i++) {
@@ -50,6 +54,7 @@ TEST_CASE("Add users to connected users list") {
     }
 
     SECTION( "Username appears/is searchable in connected user list" ) {
+        cout << "Testing if added user appears/is searchable in the users list" << endl;
         ClientData state;
         string connected_username = G.randomString();
         REQUIRE(state.findUser(connected_username) == state.connected_users.end());
@@ -65,6 +70,7 @@ TEST_CASE("Remove users from connected users list") {
     RandomStringGenerator G;
 
     SECTION( "Number of connected users decreases" ) {
+        cout << "Testing if removing a user decreases number of users" << endl;
         ClientData state;
         int num_users_previous = state.getNumUsers();
         string connected_username = G.randomString();
@@ -80,6 +86,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Can remove at least 500 added connected users" ) {
+        cout << "Testing if can remove up to 500 users" << endl;
         ClientData state;
         string connected_username = "";
         for(int i = 0; i < 500; i++) {
@@ -98,6 +105,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Cannot remove user that does not exist in connected users list" ) {
+        cout << "Testing if cannot remove user that does not exist in list" << endl;
         ClientData state;
         string connected_username = G.randomString();
         state.addUser(connected_username);
@@ -109,6 +117,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Cannot remove user from empty connected users list" ) {
+        cout << "Testing if cannot remove user from empty list" << endl;
         ClientData state;
         int num_users = state.getNumUsers();
         REQUIRE(num_users == 0);
@@ -118,6 +127,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Username does not appear/is not searchable in connected user list" ) {
+        cout << "Testing if added user does not appear/is not searchable in the users list" << endl;
         ClientData state;
         string connected_username = G.randomString();
         REQUIRE(state.findUser(connected_username) == state.connected_users.end());
