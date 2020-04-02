@@ -3,6 +3,7 @@
  * @author Samuel D. Villegas
  * @date April 2, 2020
  * @todo Implement timestamp update for other classes
+ * @todo Add data cleanup/clearing
  */
 #ifndef CONVERSATION_H
 #define CONVERSATION_H
@@ -65,12 +66,6 @@ public:
      */
     unsigned int length();
 
-    friend class ClientData;   // Give ClientData class access to private functions and variables
-
-private:
-    std::string uname;   // Entity to have conversation with
-    std::vector<struct Message> messages;   // List of messages
-
     /**
      * @brief Adds a message to the conversation
      * @param author - The author of the message
@@ -94,6 +89,8 @@ private:
      */
     void updateTimestamps(const int& num_indices, const unsigned int* indices, const std::string& timestamp);
 
+    std::string uname;   // Entity to have conversation with
+    std::vector<struct Message> messages;   // List of messages
 };
 
 #endif // CONVERSATION_H

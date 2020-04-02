@@ -12,33 +12,22 @@
 #include <random>
 #include <string>
 #include "RandomStringGenerator.h"
-#include "ViewController.h"
+#include "ClientData.h"
 
 using namespace std;
 
-TEST_CASE("ViewController Constructor") {
-    cout << "Testing ViewController Constructor" << endl;
-    ViewController state;
+TEST_CASE("ClientData Constructor") {
+    cout << "Testing ClientData Constructor" << endl;
+    ClientData state;
     REQUIRE(state.getNumUsers() == 0);
 }
-
-// TEST_CASE("Text input") {
-//     cout << "Testing text input getters & setters" << endl;
-//     ViewController state;
-//     RandomStringGenerator G;
-//     string str = G.randomString();
-
-//     state.setTextInput(str);
-
-//     REQUIRE(state.getTextInput() == str);
-// }
 
 TEST_CASE("Add users to connected users list") {
     cout << "Testing adding users to & finding users in connected users list" << endl;
     RandomStringGenerator G;
 
     SECTION( "Number of connected users increases" ) {
-        ViewController state;
+        ClientData state;
         int num_users_previous = state.getNumUsers();
         string connected_username = G.randomString();
 
@@ -49,7 +38,7 @@ TEST_CASE("Add users to connected users list") {
     }
 
     SECTION( "Can add at least 500 connected users" ) {
-        ViewController state;
+        ClientData state;
 
         for(int i = 0; i < 500; i++) {
             string connected_username = G.randomString();
@@ -61,7 +50,7 @@ TEST_CASE("Add users to connected users list") {
     }
 
     SECTION( "Username appears/is searchable in connected user list" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         REQUIRE(state.findUser(connected_username) == state.connected_users.end());
 
@@ -76,7 +65,7 @@ TEST_CASE("Remove users from connected users list") {
     RandomStringGenerator G;
 
     SECTION( "Number of connected users decreases" ) {
-        ViewController state;
+        ClientData state;
         int num_users_previous = state.getNumUsers();
         string connected_username = G.randomString();
         state.addUser(connected_username);
@@ -91,7 +80,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Can remove at least 500 added connected users" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = "";
         for(int i = 0; i < 500; i++) {
             connected_username = G.randomString();
@@ -109,7 +98,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Cannot remove user that does not exist in connected users list" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         state.addUser(connected_username);
         string some_random_username = "";
@@ -120,7 +109,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Cannot remove user from empty connected users list" ) {
-        ViewController state;
+        ClientData state;
         int num_users = state.getNumUsers();
         REQUIRE(num_users == 0);
         string some_random_username = G.randomString();
@@ -129,7 +118,7 @@ TEST_CASE("Remove users from connected users list") {
     }
 
     SECTION( "Username does not appear/is not searchable in connected user list" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         REQUIRE(state.findUser(connected_username) == state.connected_users.end());
         state.addUser(connected_username);
@@ -144,7 +133,7 @@ TEST_CASE("Add messages to a conversation") {
     RandomStringGenerator G;
 
     SECTION( "Number of messages in conversation increases" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         state.addUser(connected_username);
         state.setCurrentConversation(connected_username);
@@ -158,7 +147,7 @@ TEST_CASE("Add messages to a conversation") {
     }
 
     SECTION( "Added message appears in conversation" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         state.addUser(connected_username);
         state.setCurrentConversation(connected_username);
@@ -171,7 +160,7 @@ TEST_CASE("Add messages to a conversation") {
     }
 
     SECTION( "Can add at least 5000 messages" ) {
-        ViewController state;
+        ClientData state;
         string connected_username = G.randomString();
         state.addUser(connected_username);
         state.setCurrentConversation(connected_username);
@@ -188,53 +177,3 @@ TEST_CASE("Add messages to a conversation") {
         REQUIRE(num_messages == 5000);
     }
 }
-
-// // Tests sendMessage()
-// // Consider moving to ModelTester?
-// TEST_CASE("Add text input to a conversation") {
-//     cout << "Testing Add text input to a conversation" << endl;
-//     RandomStringGenerator G;
-
-//     SECTION( "Number of messages in conversation increases" ) {
-//         ViewController state;
-//         string connected_username = G.randomString();
-//         state.addUser(connected_username);
-//         state.setCurrentConversation(connected_username);
-//         int num_messages_previous = state.current_conversation->second.length();
-//         string message = G.randomString();
-//         state.setTextInput(message);
-
-//         state.sendMessage();
-
-//         int num_messages_current = state.current_conversation->second.length();
-//         REQUIRE(num_messages_current == num_messages_previous + 1);
-//     }
-
-//     SECTION( "Text input appears in conversation" ) {
-//         ViewController state;
-//         string connected_username = G.randomString();
-//         state.addUser(connected_username);
-//         state.setCurrentConversation(connected_username);
-//         string message = G.randomString();
-//         state.setTextInput(message);
-
-//         state.sendMessage();
-
-//         string last_message_in_conversation = state.current_conversation->second.messages.back().contents;  // Messy last message access
-//         REQUIRE(last_message_in_conversation == message);
-//     }
-
-//     SECTION( "Text input is cleared" ) {
-//         ViewController state;
-//         string connected_username = G.randomString();
-//         state.addUser(connected_username);
-//         state.setCurrentConversation(connected_username);
-//         string message = G.randomString();
-//         state.setTextInput(message);
-
-//         state.sendMessage();
-
-//         string text_input = state.getTextInput();
-//         REQUIRE(text_input == "");  // Or possibly the placeholder string
-//     }
-// }

@@ -2,10 +2,11 @@
  * @brief Implementation of class Conversation
  * @author Samuel D. Villegas
  * @date April 2, 2020
+ * @todo Add data cleanup/clearing
  */
 #include "Conversation.h"
 
-Conversation::Conversation(std::string uname) {
+Conversation::Conversation(const std::string& uname) {
     this->uname = uname;
 }
 
@@ -28,7 +29,7 @@ void Conversation::addMessage(const std::string& author, const std::string& mess
 }
 
 void Conversation::updateTimestamps(const int& num_indices, const unsigned int* indices, const std::string& timestamp){
-    for(int i = 0; i < num_indeces; i++) {
+    for(int i = 0; i < num_indices; i++) {
         this->messages.at(indices[i]).timestamp = timestamp;
     }
 }

@@ -95,18 +95,15 @@ public:
      */
     std::string getTimeStr() const;
 
-    friend class Backend;   // Give Backend class access to private functions and variables
-
-private:
-    std::string uname;      // Client user's username
-    std::string uid;        // Client user's server connection ID
-    std::string cur_convo;  // Username of user that client user is conversing with
-
     /**
      * @brief Gets the messages from the current conversation
      * @returns a JSON Object string of messages
      */
     const std::string getConversation() const;
+
+    std::string uname;      // Client user's username
+    std::string uid;        // Client user's server connection ID
+    std::string cur_convo;  // Username of user that client user is conversing with
 };
 
 #endif // VIEW_CONTROLLER_H

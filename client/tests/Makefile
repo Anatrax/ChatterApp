@@ -3,7 +3,8 @@ INC = -I ../include -I Catch2/single_include/catch2/
 BIN = bin
 
 TARGET = $(BIN)/ChatterClientTests
-SOURCE := $(filter-out $(SRC)/main.cpp, $(wildcard $(SRC)/*.cpp)) $(wildcard ./*.cpp)
+IGNORE = $(SRC)/main.cpp $(SRC)/Backend.cpp
+SOURCE := $(filter-out $(IGNORE), $(wildcard $(SRC)/*.cpp)) $(wildcard ./*.cpp)
 OBJECT := $(patsubst %,$(BIN)/%, $(notdir $(addsuffix .o,$(basename $(SOURCE)))))
 
 CC=g++
