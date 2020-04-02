@@ -23,7 +23,6 @@ Page {
         }
 
         ToolButton {
-            id: logoutButton
             anchors {
                 right: parent.right
                 rightMargin: 20
@@ -31,8 +30,10 @@ Page {
             text: "\u2302\u21db"
             font.pixelSize: Qt.application.font.pixelSize * 2.6
             onClicked: {
-                console.log("logging out...")
+                console.log("Logging out...")
+                client.uname = ""   //TODO: complete client.reset()
                 stackView.pop()
+                socket.active = false
             }
         }
     }
@@ -43,7 +44,7 @@ Page {
             topMargin: 20
         }
         padding: 10
-        text: qsTr("Welcome to Chatter, <Username>!")
+        text: qsTr("Welcome to Chatter, " + client.uname + "!")
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 20

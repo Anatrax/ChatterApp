@@ -1,29 +1,41 @@
 /**
  * @brief Definitions for class Message and class Conversation
  * @author Samuel D. Villegas
- * @date March 25, 2020
- * @todo Implement timestamp getters/setters
+ * @date April 2, 2020
+ * @todo Implement timestamp update for other classes
  */
 #ifndef CONVERSATION_H
 #define CONVERSATION_H
 
 #include <vector>
 #include <string>
-#include <ctime>
 
 /**
  * @brief A message with a timestamp
  */
 struct Message {
-    std::string contents;   // Contents of message
-    time_t timestamp;       // Timestamp
+    std::string author;                 // Author of the message
+    std::string contents;               // Contents of message
+    std::string timestamp = "--:--";    // Timestamp
 
     /**
-     * @brief Message constructor
+     * @brief Message constructor: Message with default timestamp
+     * @param author - The author of the message
      * @param message - The message string
-     * @param timestamp - The message timestamp
      */
-    Message(std::string message, time_t timestamp) {
+    Message(const std::string& author, const std::string& message) {
+        this->author = author;
+        this->contents = message;
+    }
+
+    /**
+     * @brief Message constructor: Message & Timestamp
+     * @param author - The author of the message
+     * @param message - The message string
+     * @param timestamp - The message timestamp string
+     */
+    Message(const std::string& author, const std::string& message, const std::string& timestamp) {
+        this->author = author;
         this->contents = message;
         this->timestamp = timestamp;
     }
@@ -34,34 +46,54 @@ struct Message {
  */
 class Conversation {
 public:
-    std::vector<struct Message> messages;   // List of messages
 
     /**
      * @brief Conversation Constructor
      * @param username - The name to associate the list of messages with
      */
-    Conversation(std::string username);
+    Conversation(const std::string& uname);
 
     /**
      * @brief Returns the username associated with this conversation
      * @returns username
      */
-    std::string getUsername();
+    std::string getUname();
 
     /**
      * @brief Returns the number of messages in the conversation
      * @returns number of messages
      */
-    int length();
+    unsigned int length();
+
+    friend class ClientData;   // Give ClientData class access to private functions and variables
+
+private:
+    std::string uname;   // Entity to have conversation with
+    std::vector<struct Message> messages;   // List of messages
 
     /**
      * @brief Adds a message to the conversation
+     * @param author - The author of the message
      * @param message - Message to add to the conversation
      */
-    void addMessage(std::string message);
+    void addMessage(const std::string& author, const std::string& message);
 
-private:
-    std::string username;   // Entity to have conversation with
+    /**
+     * @brief Adds a message to the conversation
+     * @param author - The author of the message
+     * @param message - Message to add to the conversation
+     * @param timestamp - The message's timestamp
+     */
+    void addMessage(const std::string& author, const std::string& message, const std::string& timestamp);
+
+    /**
+     * @brief Updates timestamp
+     * @param num_indeces - Number of indeces to update
+     * @param indices - Indeces of the messages that need to get updated
+     * @param timestamp - The new timestamp to update them with
+     */
+    void updateTimestamps(const int& num_indices, const unsigned int* indices, const std::string& timestamp);
+
 };
 
 #endif // CONVERSATION_H

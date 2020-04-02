@@ -3,8 +3,6 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 Page {
-    title: qsTr("Connected User B")
-
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
 
@@ -13,13 +11,13 @@ Page {
             text: "\u276E"
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
-                    stackView.pop()
-                    drawer.open()
+                drawer.open()
+                stackView.pop()
             }
         }
 
         Label {
-            text: stackView.currentItem.title
+            text: client.cur_convo
             anchors.centerIn: parent
             padding: 10
             font.pixelSize: 20
@@ -28,14 +26,16 @@ Page {
         }
 
         ToolButton {
-            id: closeButton
             anchors {
                 right: parent.right
                 rightMargin: 20
             }
             text: "\u00d7"
             font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: stackView.pop()
+            onClicked: {
+                client.cur_convo = ""
+                stackView.pop()
+            }
         }
     }
 
@@ -43,42 +43,56 @@ Page {
         id: chatTranscriptScroll
         anchors.fill: parent
 
-        //hint from email:
-//        TextEdit {
-//            id: chatTranscriptText
-//            width: chatTranscriptScroll.width
-//            readOnly: true
-//            textFormat: Text.RichText // enables HTML formatting
-//            wrapMode: TextEdit.Wrap
-//        }
-
         ListView {
-            model: 20
-            contentHeight: toolButton.implicitHeight
+            focus: true
             width: parent.width
+
+            header: Label {
+                text: "<b>Connected Users</b>"
+                padding: 10
+                font.pixelSize: 20
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
             delegate: ItemDelegate {
                 width: parent.width
+                height: message.height + 20
+
+                // Message
                 Text {
                     id: message
                     anchors {
                         left: parent.left
                         leftMargin: 20
                     }
-                    width: parent.width - 80
-                    text: "Lorem ipsum text here...some message that was sent...Lorem ipsum text here...some message that was sent...Lorem ipsum text here...some message that was sent...";
+                    width: parent.width - 40 - timestamp.width
+                    text: model.message
                     wrapMode: Text.WordWrap
                 }
 
+                // Timestamp
                 Text {
-                    id: timeTag
+                    id: timestamp
                     anchors {
                         right: parent.right
                         rightMargin: 20
                     }
-                    text: (index + 1) + ":00"//message.time;
+                    text: model.timestamp
                     color: "#CCC"
                 }
             }
+
+            model: ListModel { id: message_list }
+
+            Component.onCompleted: {
+                // Load conversation from C++
+                console.log("Loading messages for conversation with " + client.cur_convo + "...")
+                console.log("Messages loaded: " + client.getConversation())
+                message_list.append(JSON.parse(client.getConversation()));
+            }
+
+            ScrollIndicator.vertical: ScrollIndicator { }
         }
     }
 
@@ -90,18 +104,26 @@ Page {
             width: parent.width
 
             TextArea {
-                id: messageField
+                id: message_area
                 Layout.fillWidth: true
                 placeholderText: qsTr("Type a message...")
                 wrapMode: TextArea.Wrap
             }
 
             Button {
-                id: sendButton
                 text: qsTr("Send")
-                enabled: messageField.length > 0
+                enabled: message_area.text.length > 0
                 onClicked: {
-                    console.log("sending message...")
+                    console.log("Sending message: \"" +message_area.text + "\"")
+                    message_list.append({"message": "<b>You:</b> "+message_area.text, "timestamp": client.time})
+                    console.log(client.addMessage("You", message_area.text, client.time))   //DEBUG
+
+                    // Send message
+                    //var client_message = JSON.stringify({type:'ADD_MESSAGE',message:message_area.text,author:client.uname});
+                    //socket.sendTextMessage(client_message);
+
+                    // Clear message area for next message
+                    message_area.text = ""
                 }
             }
         }
