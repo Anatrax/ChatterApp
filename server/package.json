@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Samuel D. Villegas",
-  "license": "Mozilla Public License Version 2.0"
+  "license": "Mozilla Public License Version 2.0",
   "dependencies": {
     "utf-8-validate": "^5.0.2",
     "uuid": "^7.0.1",
