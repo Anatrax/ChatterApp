@@ -17,6 +17,18 @@ const broadcast = (data, ws) => {
   });
 };
 
+const forward = (data, recipient) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN &&
+    connectedUsers[client.client_id].uname === recipient) {
+      client.send(JSON.stringify(data));
+    }
+  });
+  // if (recipient.readyState === WebSocket.OPEN) {
+  //   recipient.send(JSON.stringify(data));
+  // }
+};
+
 wss.on('connection', (ws, request) => {
   // Send client an ID token on connect
   ws.client_id = uuid.v4();
@@ -34,9 +46,9 @@ wss.on('connection', (ws, request) => {
 
         // Check if the username is already in use
         console.log(`Checking if username "${data.uname}" is not in use...`);
-        for (const user in connectedUsers) {
-          if (Object.prototype.hasOwnProperty.call(connectedUsers, user) &&
-            (connectedUsers[user].uname === data.uname)) {
+        for (const client in connectedUsers) {
+          if (Object.prototype.hasOwnProperty.call(connectedUsers, client) &&
+            (connectedUsers[client].uname === data.uname)) {
             console.log(`Username "${data.uname}" is in use.`);
             console.log(`Send login failure message.`);
             // Send login failure message back to client
@@ -68,14 +80,18 @@ wss.on('connection', (ws, request) => {
       case 'ADD_MSG':
         // Make sure the sender's name isn't spoofed
         if (data.author !== connectedUsers[ws.client_id].uname) break;
-        // TODO: Instead of broadcast, should forward message
-        // TODO: Check if reciever exists
-        broadcast({
-          type: 'ADD_MSG',
-          author: data.author,
-          timestamp: data.timestamp,
-          message: data.message,
-        }, ws);
+        // Check if reciever exists
+        console.log(`Checking if recipient "${data.uname}" exists...`);
+        for (const client in connectedUsers) {
+          if (Object.prototype.hasOwnProperty.call(connectedUsers, client) &&
+            (connectedUsers[client].uname === data.recipient)) {
+            console.log(`Recipient "${data.recipient}" exists!`);
+            console.log(`Sending message to "${data.recipient}"...`);
+            // Forward message to specified recipient
+            forward(data, data.recipient);
+            break;
+          }
+        }
         break;
 
       default:
