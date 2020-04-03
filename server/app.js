@@ -9,6 +9,7 @@ const wss = new WebSocket.Server({port: portNumber});
 
 const connectedUsers = {};
 const unames = [];
+const uname_strings = [];
 
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
@@ -35,7 +36,7 @@ wss.on('connection', (ws, request) => {
 
         // Check if the username is already in use
         console.log(`Checking if username "${data.uname}" is not in use...`);
-        if ( unames.includes(data.uname) ) {
+        if ( uname_strings.includes(data.uname) ) {
           console.log(`Username "${data.uname}" is in use.
           Send login failure message.`);
           // Send login failure message back to client
@@ -58,6 +59,7 @@ wss.on('connection', (ws, request) => {
 
         // Add username to list
         unames.push({uname: data.uname});
+        uname_strings.push(data.uname);
 
         // Let everyone know that a new user has connected
         broadcast({
@@ -93,7 +95,13 @@ wss.on('connection', (ws, request) => {
     }, ws);
 
     // Remove client from username list
-    const index = unames.indexOf(connectedUsers[ws.client_id]);
+    let index = uname_strings.indexOf(connectedUsers[ws.client_id]);
+    if (index > -1) {
+      uname_strings.splice(index, 1);
+    }
+
+    // Remove client from users list
+    index = unames.indexOf({uname: connectedUsers[ws.client_id]});
     if (index > -1) {
       unames.splice(index, 1);
     }
