@@ -59,7 +59,7 @@ ApplicationWindow {
     WebSocket{
         id:socket
         active: false
-        url: "ws://localhost:8888"  //TODO: Change to 8080
+        url: "ws://localhost:8080"
         onTextMessageReceived: function(message){
             console.log("Recieved:", message)
             var data = JSON.parse(message)
