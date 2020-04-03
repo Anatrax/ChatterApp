@@ -35,15 +35,13 @@ wss.on('connection', (ws, request) => {
         // Check if the username is already in use
         console.log(`Checking if username "${data.uname}" is not in use...`);
         for (const user in connectedUsers) {
-          if (Object.prototype.hasOwnProperty.call(connectedUsers, user)) {// &&
-            console.log('[..', connectedUsers[user]);
-            if (connectedUsers[user] === data.uname) {
-              console.log(`Username "${data.uname}" is in use.`);
-              console.log(`Send login failure message.`);
-              // Send login failure message back to client
-              ws.send(JSON.stringify({type: 'LOGIN_FAIL'}));
-              break;
-            }
+          if (Object.prototype.hasOwnProperty.call(connectedUsers, user) &&
+            (connectedUsers[user].uname === data.uname)) {
+            console.log(`Username "${data.uname}" is in use.`);
+            console.log(`Send login failure message.`);
+            // Send login failure message back to client
+            ws.send(JSON.stringify({type: 'LOGIN_FAIL'}));
+            break;
           }
         }
 
