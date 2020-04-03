@@ -9,7 +9,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Run npm install inside the container
-#RUN npm install
 RUN npm ci --only=production
 
 # Copy the rest of the source code
