@@ -12,5 +12,9 @@
     "utf-8-validate": "^5.0.2",
     "uuid": "^7.0.1",
     "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
