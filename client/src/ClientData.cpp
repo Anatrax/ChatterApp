@@ -115,7 +115,6 @@ std::string ClientData::getTimeStr() const {
 
 void ClientData::reset(){
     this->connected_users.clear();
-    this->current_conversation = nullptr;
     this->uname = "";
     this->uid = "";
     this->cur_convo = "";

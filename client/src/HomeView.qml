@@ -31,9 +31,10 @@ Page {
             font.pixelSize: Qt.application.font.pixelSize * 2.6
             onClicked: {
                 console.log("Logging out...")
-                client.uname = ""   //TODO: complete client.reset()
-                stackView.pop()
-                socket.active = false
+                client.resetData()      // Delete the user's data
+                connected_users_list.clear()
+                stackView.pop()         // Log out
+                socket.active = false   // Disconnect from the server
             }
         }
     }

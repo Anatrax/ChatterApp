@@ -17,6 +17,7 @@ class Backend : public QObject
     Q_OBJECT
     Q_PROPERTY(QString uname READ uname WRITE setUname NOTIFY unameChanged)
     Q_PROPERTY(QString uid READ uid WRITE setUID NOTIFY uidChanged)
+    Q_PROPERTY(QString login_err READ login_err WRITE setloginErr NOTIFY loginErrChanged)
     Q_PROPERTY(QString cur_convo READ cur_convo WRITE setCurConvo NOTIFY currentConversationChanged)
     Q_PROPERTY(QString time READ time)
 
@@ -51,6 +52,18 @@ public:
     QString uid() const;
 
     /**
+     * @brief Sets the login error message
+     * @param err_msg - The error message
+     */
+    void setloginErr(const QString& err_msg);
+
+    /**
+     * @brief Gets the login error message
+     * @returns the login error message
+     */
+    QString login_err() const;
+
+    /**
      * @brief Sets the name of the current conversation
      * @param uname - The username to converse with
      */
@@ -74,6 +87,13 @@ public:
      * @returns 0 if user was added successfully, -1 otherwise
      */
     Q_INVOKABLE int addUser(const QString& uname);
+
+    /**
+     * @brief Removes a user from the connected users list
+     * @param uname - The name of the user to remove
+     * @returns 0 if user was removed successfully, -1 otherwise
+     */
+    Q_INVOKABLE int removeUser(const QString& uname);
 
     /**
      * @brief Adds client's message to the current conversation
@@ -108,26 +128,32 @@ public:
     /**
      * @brief Clears all data and resets to default init state
      */
-    Q_INVOKABLE void reset();
+    Q_INVOKABLE void resetData();
 
 signals:
     /**
-     * @brief Send client's username changed signal
+     * @brief Send "client's username changed" signal
      */
     void unameChanged();
 
     /**
-     * @brief Send client's user ID changed signal
+     * @brief Send "client's user ID changed" signal
      */
     void uidChanged();
 
     /**
-     * @brief Send client's current conversation changed signal
+     * @brief Send "login error message changed" signal
+     */
+    void loginErrChanged();
+
+    /**
+     * @brief Send "client's current conversation changed" signal
      */
     void currentConversationChanged();
 
 private:
     ClientData data_model;  // Client data model
+    QString login_err_msg;  // Login error message
 };
 
 #endif // BACKEND_H

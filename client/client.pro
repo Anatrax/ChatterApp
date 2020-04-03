@@ -16,11 +16,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += include
 
 HEADERS += \
-    include/Backend.h
+    include/Backend.h \
+    include/ClientData.h \
+    include/Conversation.h
 
 SOURCES += \
-        src/main.cpp \
-    src/Backend.cpp
+    src/Backend.cpp \
+    src/ClientData.cpp \
+    src/Conversation.cpp \
+    src/main.cpp
 
 RESOURCES += src/qml.qrc
 

@@ -21,15 +21,27 @@ void Backend::setUID(const QString& uid){
     emit this->uidChanged();                        // Send signal to notify change
 }
 
+void Backend::setloginErr(const QString& err_msg){
+    if (err_msg == this->login_err_msg) // Safety check
+        return;
+    this->login_err_msg = err_msg;      // Set error message
+    emit this->loginErrChanged();       // Send signal to notify change
+}
+
 void Backend::setCurConvo(const QString& convo){
     if (convo.toStdString() == this->data_model.cur_convo)          // Safety check
         return;
+    this->data_model.cur_convo = convo.toStdString();               // Set current conversation name
     this->data_model.setCurrentConversation(convo.toStdString());   // Set current conversation
     emit this->currentConversationChanged();                        // Send signal to notify change
 }
 
 int Backend::addUser(const QString& uname){
     return this->data_model.addUser(uname.toStdString());
+}
+
+int Backend::removeUser(const QString& uname){
+    return this->data_model.removeUser(uname.toStdString());
 }
 
 int Backend::addMessage(const QString& message){
@@ -52,6 +64,10 @@ QString Backend::uid() const {
     return QString::fromStdString(this->data_model.uid);
 }
 
+QString Backend::login_err() const {
+    return this->login_err_msg;
+}
+
 QString Backend::cur_convo() const {
     return QString::fromStdString(this->data_model.cur_convo);
 }
@@ -66,4 +82,7 @@ QString Backend::getConversation() const {
 
 void Backend::resetData(){
     this->data_model.reset();
+    emit this->unameChanged();                  // Send signal to notify change
+    emit this->uidChanged();                    // Send signal to notify change
+    emit this->currentConversationChanged();    // Send signal to notify change
 }

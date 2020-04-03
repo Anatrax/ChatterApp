@@ -6,6 +6,7 @@ Page {
     Layout.fillWidth: true
 
     RowLayout {
+        id: login_area
         anchors.centerIn: parent
 
         TextArea {
@@ -21,10 +22,20 @@ Page {
             text: qsTr("Launch")
             enabled: client.uname.length > 0
             onClicked: {
+                client.login_err = ""           // Clear error message
                 console.log("Creating user: " + client.uname)
-                socket.active = true    // Connect chat client to chat server
-                stackView.push("HomeView.qml")
+                socket.active = true            // Connect chat client to chat server
             }
         }
+    }
+
+    // Error message to show on non-unique username
+    Text {
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: login_area.bottom
+        }
+        color: "red"
+        text: client.login_err
     }
 }

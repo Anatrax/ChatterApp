@@ -104,7 +104,7 @@ public:
     /**
      * @brief Clears all data and resets to default init state
      */
-    void resetData();
+    void reset();
 
     std::string uname;      // Client user's username
     std::string uid;        // Client user's server connection ID

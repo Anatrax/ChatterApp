@@ -47,14 +47,6 @@ Page {
             focus: true
             width: parent.width
 
-            header: Label {
-                text: "<b>Connected Users</b>"
-                padding: 10
-                font.pixelSize: 20
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
             delegate: ItemDelegate {
                 width: parent.width
                 height: message.height + 20
@@ -119,8 +111,8 @@ Page {
                     console.log(client.addMessage("You", message_area.text, client.time))   //DEBUG
 
                     // Send message
-                    //var client_message = JSON.stringify({type:'ADD_MESSAGE',message:message_area.text,author:client.uname});
-                    //socket.sendTextMessage(client_message);
+                    var client_message = JSON.stringify({type:'ADD_MSG',uid:client.uid,author:client.uname,message:message_area.text});
+                    socket.sendTextMessage(client_message);
 
                     // Clear message area for next message
                     message_area.text = ""

@@ -10,47 +10,44 @@ const wss = new WebSocket.Server({port: portNumber});
 const connectedUsers = {};
 const unames = [];
 
-// TODO: Make sure to exclude sender somehow
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && client !== wss) {
+    if (client.readyState === WebSocket.OPEN && client !== ws) {
       client.send(JSON.stringify(data));
     }
   });
 };
 
 wss.on('connection', (ws, request) => {
+  // Send client an ID token on connect
   ws.client_id = uuid.v4();
-
-  // Send client an ID token
   ws.send(JSON.stringify({
     type: 'TOKEN',
     id: ws.client_id,
   }));
 
   ws.on('message', (message) => {
+    console.log('Server received: ', message);
     const data = JSON.parse(message);
     switch (data.type) {
       case 'UN_REQ':
-        console.log('Username request: ', data.uname);
-        console.log(`Check if username "${data.uname}" is not in use.`);
+        console.log(`Username requested: "${data.uname}"`);
 
         // Check if the username is already in use
-        if ( unames.indexOf(data.name) > -1 ) {
+        console.log(`Checking if username "${data.uname}" is not in use...`);
+        if ( unames.includes(data.uname) ) {
           console.log(`Username "${data.uname}" is in use.
-                        Send login failure message.`);
+          Send login failure message.`);
           // Send login failure message back to client
           ws.send(JSON.stringify({type: 'LOGIN_FAIL'}));
-          break; // Exit out of switch statement
+          break;
         }
 
-        console.log(`Username "${data.uname}" is not in use.
-        Add "${data.uname}" to connected users list.`);
+        console.log(`Username "${data.uname}" is not in use!`);
+        console.log(`Add "${data.uname}" to connected users list.`);
 
-        // Create a user object with requested username
-        // var new_user = {uname: data.uname};
-        // Add user object to connected users list, indexed by user's client ID
-        connectedUsers[ws.client_id] = {uname: data.uname};
+        // Add username to connected users list, indexed by user's client ID
+        connectedUsers[ws.client_id] = data.uname;
 
         // Send login success message back to client
         // along with a list of the connected users
@@ -60,7 +57,7 @@ wss.on('connection', (ws, request) => {
         }));
 
         // Add username to list
-        unames.push(data.uname);
+        unames.push({uname: data.uname});
 
         // Let everyone know that a new user has connected
         broadcast({
@@ -70,14 +67,15 @@ wss.on('connection', (ws, request) => {
         break;
 
       case 'ADD_MSG':
-        // TODO: Make sure author matches username of ws.clientID
-        // TODO: Instead of broadcast, should forward message
-        broadcast({
-          type: 'ADD_MSG',
-          author: data.author,
-          timestamp: data.timestamp,
-          message: data.message,
-        }, ws);
+        if (data.author === connectedUsers[ws.client_id]) {
+          // TODO: Instead of broadcast, should forward message
+          broadcast({
+            type: 'ADD_MSG',
+            author: data.author,
+            timestamp: data.timestamp,
+            message: data.message,
+          }, ws);
+        }
         break;
 
       default:
@@ -88,14 +86,19 @@ wss.on('connection', (ws, request) => {
   ws.on('close', () => {
     console.log('Client dropped:', ws.client_id);
 
-    // Remove client from connected users list
-    delete connectedUsers[ws.client_id];
-    // unames.splice(index, 1); // Remove client from username list
-
     // Let everyone know that the user has disconnected
     broadcast({
-      type: 'USERS_LIST',
-      connectedUsers,
+      type: 'DEL_UN',
+      uname: connectedUsers[ws.client_id],
     }, ws);
+
+    // Remove client from username list
+    const index = unames.indexOf(connectedUsers[ws.client_id]);
+    if (index > -1) {
+      unames.splice(index, 1);
+    }
+
+    // Remove client from connected users list
+    delete connectedUsers[ws.client_id];
   });
 });

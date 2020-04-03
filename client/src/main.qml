@@ -62,13 +62,76 @@ ApplicationWindow {
         url: "ws://localhost:8888"  //TODO: Change to 8080
         onTextMessageReceived: function(message){
             console.log("Recieved:", message)
-            connected_users_list.append({"uname":"User A"})//data.uname);
-            connected_users_list.append({"uname":"User B"})//data.uname);
-            connected_users_list.append({"uname":"User C"})//data.uname);
-            client.addUser("User A")//data.uname);
-            client.addUser("User B")//data.uname);
-            client.addUser("User C")//data.uname);
-            //socket.sendTextMessage("I received (" + message + ")")
+            var data = JSON.parse(message)
+
+            console.log("Type:", data.type)
+            switch(data.type){
+            case 'TOKEN':
+                // TOKEN is connection response from server
+                // containing a unique ID for the client
+                client.uid = data.id
+                console.log("Set client user ID to: ", client.uid)
+
+                // Client can now make its login request
+                var login_request = JSON.stringify({type:'UN_REQ',uname:client.uname})
+                socket.sendTextMessage(login_request)
+                break;
+
+            case 'LOGIN_FAIL':
+                // LOGIN_FAIL means that the
+                // requested username is already in use
+                console.log("Login failed, username already in use")
+
+                socket.active = false   // Disconnect from server
+                // Show error message to user
+                client.login_err = "Username is already taken. Try a different username."
+                break;
+
+            case 'LOGIN_SUCCESS':
+                // LOGIN_SUCCESS contains the current list
+                // of connected users from the chat server
+                console.log("Login succeeded!")
+
+                // Display this list in the client's
+                // connected users list
+                console.log(JSON.stringify(data.unames))
+                data.unames.forEach(function initConnectedUsersList(user) {
+                    console.log("Appending \""+user.uname+"\" to Connected Users List...")
+                    connected_users_list.append(user)   // Add to visual model
+                    client.addUser(user.uname)          // Add to data model
+                });
+
+                // Log the user in
+                stackView.push("HomeView.qml")
+                break;
+
+            case 'ADD_UN':
+                // ADD_UN contains the username
+                // of a newly connected user
+                console.log("New user, \""+data.uname+"\", connected")
+
+                connected_users_list.append(data)   // Add to visual model
+                client.addUser(data.uname)          // Add to data model
+                break;
+
+            case 'DEL_UN':
+                var i;
+                for(i = 0; i < connected_users_list.count; i++) {
+                    if(connected_users_list.get(i).uname === data.uname) {
+                        connected_users_list.remove(i);    // Remove from visual model
+                        client.removeUser(data.uname)    // Remove from data model
+                        break;
+                    }
+                }
+                break;
+
+            case 'ADD_MSG':
+                //cur_convo message_list.append(data.message)   // Add to visual model
+                client.addMessage(data.author, data.message, client.time)    // Add to data model
+                break;
+            default:
+                break;
+            }
         }
     }
 }
