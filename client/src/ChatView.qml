@@ -111,7 +111,7 @@ Page {
                     client.addMessage("You", message_area.text, client.time)
 
                     // Send message
-                    var client_message = JSON.stringify({type:'ADD_MSG',author:client.uname,message:message_area.text});
+                    var client_message = JSON.stringify({type:'ADD_MSG',author:client.uname,recipient:client.cur_convo,message:message_area.text});
                     socket.sendTextMessage(client_message);
 
                     // Clear message area for next message
