@@ -108,10 +108,10 @@ Page {
                 onClicked: {
                     console.log("Sending message: \"" +message_area.text + "\"")
                     message_list.append({"message": "<b>You:</b> "+message_area.text, "timestamp": client.time})
-                    console.log(client.addMessage("You", message_area.text, client.time))   //DEBUG
+                    client.addMessage("You", message_area.text, client.time)
 
                     // Send message
-                    var client_message = JSON.stringify({type:'ADD_MSG',uid:client.uid,author:client.uname,message:message_area.text});
+                    var client_message = JSON.stringify({type:'ADD_MSG',author:client.uname,message:message_area.text});
                     socket.sendTextMessage(client_message);
 
                     // Clear message area for next message

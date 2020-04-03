@@ -2,8 +2,6 @@
  * @brief Definitions for class Message and class Conversation
  * @author Samuel D. Villegas
  * @date April 2, 2020
- * @todo Implement timestamp update for other classes
- * @todo Add data cleanup/clearing
  */
 #ifndef CONVERSATION_H
 #define CONVERSATION_H
@@ -80,14 +78,6 @@ public:
      * @param timestamp - The message's timestamp
      */
     void addMessage(const std::string& author, const std::string& message, const std::string& timestamp);
-
-    /**
-     * @brief Updates timestamp
-     * @param num_indeces - Number of indeces to update
-     * @param indices - Indeces of the messages that need to get updated
-     * @param timestamp - The new timestamp to update them with
-     */
-    void updateTimestamps(const int& num_indices, const unsigned int* indices, const std::string& timestamp);
 
     std::string uname;   // Entity to have conversation with
     std::vector<struct Message> messages;   // List of messages

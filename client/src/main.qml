@@ -64,7 +64,6 @@ ApplicationWindow {
             console.log("Recieved:", message)
             var data = JSON.parse(message)
 
-            console.log("Type:", data.type)
             switch(data.type){
             case 'TOKEN':
                 // TOKEN is connection response from server
@@ -115,6 +114,11 @@ ApplicationWindow {
                 break;
 
             case 'DEL_UN':
+                // DEL_UN means a user has disconnected
+                // and the client should remove the
+                // username from its lists
+                console.log("Deleting disconnected user, \""+data.uname+"\".")
+
                 var i;
                 for(i = 0; i < connected_users_list.count; i++) {
                     if(connected_users_list.get(i).uname === data.uname) {
@@ -126,6 +130,10 @@ ApplicationWindow {
                 break;
 
             case 'ADD_MSG':
+                // ADD_MSG means that a message has
+                // been sent to the client
+                console.log("Received message from \""+data.author+"\": \""+data.message+"\"")
+
                 //cur_convo message_list.append(data.message)   // Add to visual model
                 client.addMessage(data.author, data.message, client.time)    // Add to data model
                 break;

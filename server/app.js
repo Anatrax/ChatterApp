@@ -8,8 +8,6 @@ const portNumber = process.argv[2] || 8080;
 const wss = new WebSocket.Server({port: portNumber});
 
 const connectedUsers = {};
-const unames = [];
-const uname_strings = [];
 
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
@@ -36,30 +34,31 @@ wss.on('connection', (ws, request) => {
 
         // Check if the username is already in use
         console.log(`Checking if username "${data.uname}" is not in use...`);
-        if ( uname_strings.includes(data.uname) ) {
-          console.log(`Username "${data.uname}" is in use.
-          Send login failure message.`);
-          // Send login failure message back to client
-          ws.send(JSON.stringify({type: 'LOGIN_FAIL'}));
-          break;
+        for (const user in connectedUsers) {
+          if (Object.prototype.hasOwnProperty.call(connectedUsers, user)) {// &&
+            console.log('[..', connectedUsers[user]);
+            if (connectedUsers[user] === data.uname) {
+              console.log(`Username "${data.uname}" is in use.`);
+              console.log(`Send login failure message.`);
+              // Send login failure message back to client
+              ws.send(JSON.stringify({type: 'LOGIN_FAIL'}));
+              break;
+            }
+          }
         }
 
         console.log(`Username "${data.uname}" is not in use!`);
         console.log(`Add "${data.uname}" to connected users list.`);
 
-        // Add username to connected users list, indexed by user's client ID
-        connectedUsers[ws.client_id] = data.uname;
-
         // Send login success message back to client
         // along with a list of the connected users
         ws.send(JSON.stringify({
           type: 'LOGIN_SUCCESS',
-          unames,
+          unames: Object.values(connectedUsers),
         }));
 
-        // Add username to list
-        unames.push({uname: data.uname});
-        uname_strings.push(data.uname);
+        // Add username to connected users list, indexed by user's client ID
+        connectedUsers[ws.client_id] = {uname: data.uname};
 
         // Let everyone know that a new user has connected
         broadcast({
@@ -69,15 +68,16 @@ wss.on('connection', (ws, request) => {
         break;
 
       case 'ADD_MSG':
-        if (data.author === connectedUsers[ws.client_id]) {
-          // TODO: Instead of broadcast, should forward message
-          broadcast({
-            type: 'ADD_MSG',
-            author: data.author,
-            timestamp: data.timestamp,
-            message: data.message,
-          }, ws);
-        }
+        // Make sure the sender's name isn't spoofed
+        if (data.author !== connectedUsers[ws.client_id].uname) break;
+        // TODO: Instead of broadcast, should forward message
+        // TODO: Check if reciever exists
+        broadcast({
+          type: 'ADD_MSG',
+          author: data.author,
+          timestamp: data.timestamp,
+          message: data.message,
+        }, ws);
         break;
 
       default:
@@ -91,20 +91,8 @@ wss.on('connection', (ws, request) => {
     // Let everyone know that the user has disconnected
     broadcast({
       type: 'DEL_UN',
-      uname: connectedUsers[ws.client_id],
+      uname: connectedUsers[ws.client_id].uname,
     }, ws);
-
-    // Remove client from username list
-    let index = uname_strings.indexOf(connectedUsers[ws.client_id]);
-    if (index > -1) {
-      uname_strings.splice(index, 1);
-    }
-
-    // Remove client from users list
-    index = unames.indexOf({uname: connectedUsers[ws.client_id]});
-    if (index > -1) {
-      unames.splice(index, 1);
-    }
 
     // Remove client from connected users list
     delete connectedUsers[ws.client_id];
