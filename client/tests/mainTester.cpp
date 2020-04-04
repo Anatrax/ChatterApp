@@ -7,8 +7,7 @@
 //Tell catch this is our main
 #define CATCH_CONFIG_RUNNER
 
-#include "../Catch2/single_include/catch2/catch.hpp"
-
+#include "catch.hpp"
 
 int main ()
 {

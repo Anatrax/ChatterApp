@@ -1,11 +1,16 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "Backend.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    // Register the client backend
+    qmlRegisterType<Backend>("ChatClient.Backend", 0, 1, "Backend");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

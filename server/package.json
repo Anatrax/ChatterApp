@@ -1,0 +1,25 @@
+{
+  "name": "chatter-app-webserver",
+  "version": "0.0.1",
+  "description": "A chat client application & chat server",
+  "main": "app.js",
+  "scripts": {
+    "run": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samuel D. Villegas",
+  "license": "MPL-2.0",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Anatrax/ChatterApp.git"
+  },
+  "dependencies": {
+    "utf-8-validate": "^5.0.2",
+    "uuid": "^7.0.1",
+    "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}

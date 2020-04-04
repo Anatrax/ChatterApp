@@ -1,13 +1,14 @@
-SRC = ./*
-INC = .
+SRC = ../src
+INC = -I ../include -I Catch2/single_include/catch2/
 BIN = bin
 
-TARGET = $(BIN)/controllerTester
-SOURCE := $(wildcard $(SRC)/*.cpp)
+TARGET = $(BIN)/ChatterClientTests
+IGNORE = $(SRC)/main.cpp $(SRC)/Backend.cpp
+SOURCE := $(filter-out $(IGNORE), $(wildcard $(SRC)/*.cpp)) $(wildcard ./*.cpp)
 OBJECT := $(patsubst %,$(BIN)/%, $(notdir $(addsuffix .o,$(basename $(SOURCE)))))
 
 CC=g++
-CFLAGS = -std=c++11 -Wall -g -pedantic -I $(INC)
+CFLAGS = -std=c++11 -Wall -g -pedantic $(INC)
 
 RED = \e[1;31m
 GREEN = \e[1;32m
@@ -20,13 +21,20 @@ all: bin $(TARGET)
 bin:
 	mkdir -pv bin
 
+# Link object files together into one executable
 $(TARGET): $(OBJECT)
 	@echo -e "$(GREEN)Linking...$(NO_COLOR)"
 	$(CC) $^ -o $@
 	@echo -e "$(GREEN)Done$(NO_COLOR)"
 
+# Compile classes to test
 $(BIN)/%.o: $(SRC)/%.cpp
-	@echo -e "$(GREEN)Compiling$(NO_COLOR)"
+	@echo -e "$(GREEN)Compiling...$(NO_COLOR)"
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile tests
+$(BIN)/%.o: %.cpp
+	@echo -e "$(GREEN)Compiling...$(NO_COLOR)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: bin all test clean help
@@ -37,6 +45,7 @@ test: all
 clean:
 	rm -rf bin
 
+# Print helpful information for debugging Makefile
 help:
 	@echo -e "$(GREEN)target: $(BLUE)$(TARGET)$(NO_COLOR)"
 	@echo -e "$(GREEN)src: $(BLUE)$(SOURCE)$(NO_COLOR)"
